@@ -127,7 +127,7 @@ public enum ServerTrustPolicy {
 
         - returns: All certificates within the given bundle.
     */
-    public static func certificatesInBundle(_ bundle: Bundle = Bundle.main) -> [SecCertificate] {
+    public static func certificatesInBundle(_ bundle: Bundle = Bundle.main()) -> [SecCertificate] {
         var certificates: [SecCertificate] = []
 
         let paths = Set([".cer", ".CER", ".crt", ".CRT", ".der", ".DER"].map { fileExtension in
@@ -152,7 +152,7 @@ public enum ServerTrustPolicy {
 
         - returns: All public keys within the given bundle.
     */
-    public static func publicKeysInBundle(_ bundle: Bundle = Bundle.main) -> [SecKey] {
+    public static func publicKeysInBundle(_ bundle: Bundle = Bundle.main()) -> [SecKey] {
         var publicKeys: [SecKey] = []
 
         for certificate in certificatesInBundle(bundle) {
@@ -293,7 +293,7 @@ public enum ServerTrustPolicy {
         var trust: SecTrust?
         let trustCreationStatus = SecTrustCreateWithCertificates(certificate, policy, &trust)
 
-        if let trust = trust, trustCreationStatus == errSecSuccess {
+        if let trust = trust where trustCreationStatus == errSecSuccess {
             publicKey = SecTrustCopyPublicKey(trust)
         }
 

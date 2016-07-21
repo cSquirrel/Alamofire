@@ -180,7 +180,7 @@ public class Request {
         if startTime == nil { startTime = CFAbsoluteTimeGetCurrent() }
 
         task.resume()
-        NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.Task.DidResume), object: task)
+        NotificationCenter.default().post(name: Notification.Name(rawValue: Notifications.Task.DidResume), object: task)
     }
 
     /**
@@ -188,7 +188,7 @@ public class Request {
     */
     public func suspend() {
         task.suspend()
-        NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.Task.DidSuspend), object: task)
+        NotificationCenter.default().post(name: Notification.Name(rawValue: Notifications.Task.DidSuspend), object: task)
     }
 
     /**
@@ -205,7 +205,7 @@ public class Request {
             task.cancel()
         }
 
-        NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.Task.DidCancel), object: task)
+        NotificationCenter.default().post(name: Notification.Name(rawValue: Notifications.Task.DidCancel), object: task)
     }
 
     // MARK: - TaskDelegate
@@ -497,7 +497,7 @@ extension Request: CustomDebugStringConvertible {
             return "$ curl command could not be created"
         }
 
-        if let httpMethod = request.httpMethod, httpMethod != "GET" {
+        if let httpMethod = request.httpMethod where httpMethod != "GET" {
             components.append("-X \(httpMethod)")
         }
 
@@ -523,7 +523,7 @@ extension Request: CustomDebugStringConvertible {
 
         if session.configuration.httpShouldSetCookies {
             if let cookieStorage = session.configuration.httpCookieStorage,
-               let cookies = cookieStorage.cookies(for: URL), !cookies.isEmpty
+               let cookies = cookieStorage.cookies(for: URL) where !cookies.isEmpty
             {
                 let string = cookies.reduce("") { $0 + "\($1.name)=\($1.value ?? String());" }
                 components.append("-b \"\(string.substring(to: string.characters.index(before: string.endIndex)))\"")
